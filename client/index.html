@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Nvidia Monitor(nvmon) Web UI</title>
+    <!-- jQuery -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- Materialize -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="./libs/materialize.css" media="screen,projection"/>
+    <script type="text/javascript" src="./libs/materialize.js"></script>
+    <!-- nvmon-ui-main -->
+    <script type="text/javascript" src="./nvmon-ui-main.js"></script>
+  </head>
+  <body>
+    <div class="navbar-fixed" style="z-index:900;">
+      <nav>
+        <div class="nav-wrapper blue">
+          <a href="#" class="brand-logo" style="margin-left:10px;"><i class="material-icons">assessment</i>Nvidia Monitor</a>
+        </div>
+        <main>
+          <div id="mainContainer">
+            <div class="row">
+              <div class="col s12 m6">
+                <div class="card">
+                  <div class="card-content black-text">
+                    <p id="smiContents">
+                    </p>
+                  </div>
+                  <div class="card-action">
+                    <a href="#">Refresh</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </nav>
+    </div>
+  </body>
+</html>
