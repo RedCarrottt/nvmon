@@ -1,0 +1,23 @@
+{
+  "name": "nvmon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nvmon-smi-server.js",
+  "dependencies": {
+    "connect": "^3.6.6",
+    "cors": "^2.8.4",
+    "node-nvidia-smi": "^1.0.0",
+    "serve-static": "^1.13.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@115.145.178.61:redcarrottt/nvmon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
