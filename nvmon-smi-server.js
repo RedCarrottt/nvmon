@@ -16,7 +16,10 @@ const port = 3100; /* nvmon-smi-server port */
         return;
       }
 
-      if(ifname.startsWith("enp") || ifname.startsWith("eth")) {
+      if(os.type.startsWith("Windows") ||
+          ifname.startsWith("enp") ||
+          ifname.startsWith("eth") ||
+          ifname.startsWith("wlan")) {
         hostname = iface.address;
       }
     });
