@@ -16,7 +16,7 @@ const port = 3100; /* nvmon-smi-server port */
         return;
       }
 
-      if(os.type.startsWith("Windows") ||
+      if(os.type().startsWith("Windows") ||
           ifname.startsWith("enp") ||
           ifname.startsWith("eth") ||
           ifname.startsWith("wlan")) {
