@@ -136,7 +136,11 @@ ServerCard.prototype.refresh = function() {
           if(j != 0) {
             str = str + ", ";
           }
-          str = str + procinfo.pid + "(" + procinfo.process_name + "; " + procinfo.used_memory + ")";
+          var username = (procinfo.username === undefined) "Unknown" : procinfo.username;
+          var pname = procinfo.process_name;
+          var pid = procinfo.pid;
+          var used_memory = procinfo.used_memory;
+          str = str + username + ": " + pname + "(pid " + pid + ", " + used_memory +")";
         }
       } else {
         str = str + "<br />&nbsp;&nbsp;&nbsp; No Running Processes";
