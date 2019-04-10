@@ -130,20 +130,24 @@ ServerCard.prototype.refresh = function() {
           processes = gpu.processes.process_info;
         }
 
-        str = str + "<br />&nbsp;&nbsp;&nbsp; Running: ";
+        str = str + "<font color='red'><b>";
         for(var j in processes) {
           var procinfo = processes[j];
           if(j != 0) {
             str = str + ", ";
           }
-          var username = (procinfo.username === undefined) "Unknown" : procinfo.username;
+          var username = (procinfo.username === undefined) ? "Unknown" : procinfo.username;
           var pname = procinfo.process_name;
           var pid = procinfo.pid;
           var used_memory = procinfo.used_memory;
+          str = str + "<br />&nbsp;&nbsp;&nbsp; ";
           str = str + username + ": " + pname + "(pid " + pid + ", " + used_memory +")";
         }
+        str = str + "</b></font>";
       } else {
+        str = str + "<font color='green'><b>";
         str = str + "<br />&nbsp;&nbsp;&nbsp; No Running Processes";
+        str = str + "</b></font>";
       }
     }
     $('#' + this.contentsId).html(str);
