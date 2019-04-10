@@ -46,8 +46,14 @@ function add_username(smiObj) {
   for(i in pidListRawLines) {
     var line = pidListRawLines[i];
     var toks = line.replace(/\s+/g, " ").split(" ");
-    var pid = parseInt(toks[0]);
-    var username = toks[1];
+    var pid, username;
+    if(toks[0] == "") {
+      pid = parseInt(toks[1]);
+      username = toks[2];
+    } else {
+      pid = parseInt(toks[0]);
+      username = toks[1];
+    }
     if(isNaN(pid)) continue;
     pidToUsername[pid] = username;
   }
