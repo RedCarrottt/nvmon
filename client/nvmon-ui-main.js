@@ -3,7 +3,7 @@ window.onload = () => {
   // Initialize Server Cards
   for(var i in NvmonConfig.serverList) {
     var server = NvmonConfig.serverList[i];
-    serverCards.push(new ServerCard(server.name, server.ip));
+    serverCards.push(new ServerCard(server.name, server.ip, server.port));
   }
 
   // Initialize Server Card UI
