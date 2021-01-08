@@ -67,6 +67,43 @@ ServerCard.prototype.appendDom = function() {
   $("#mainRow").append(newDom); 
 };
 
+function getTempColor(temp) {
+	var hotness = undefined;
+	if(temp >= 100)
+		hotness = 255;
+	else if(temp >= 60)
+		hotness = (temp - 60) / 40 * 255;
+	else
+		hotness = 0;
+	var coldness = undefined;
+	if(temp < 30)
+		coldness = 255;
+	else if(temp < 60)
+		coldness = -(60 - temp) / 30 * 255;
+	else
+		coldness = 0;
+	var red_num = parseInt(hotness);
+	var red = Number(red_num).toString(16);
+	var blue_num = parseInt(coldness);
+	var blue = Number(blue_num).toString(16);
+	var color_value = '#' + red + '00' + blue;
+	return color_value;
+}
+
+var pname_blacklist = [
+	'Xorg',
+	'gnome-shell',
+	'gnome'
+];
+function isBlacklisted(pname) {
+	for(var i in pname_blacklist) {
+		var entry = pname_blacklist[i];
+		if(pname.indexOf(entry) > 0)
+			return true;
+	}
+	return false;
+}
+
 ServerCard.prototype.refresh = function() {
   if(this.cardId === undefined || this.contentsId === undefined)
     return;
@@ -95,6 +132,11 @@ ServerCard.prototype.refresh = function() {
 
     var smi = JSON.parse(smistr);
     var gpus;
+    if(smi.error !== undefined) {
+      var str = "nvidia-smi failure";
+      $('#' + this.contentsId).html(str);
+      console.error("Error on " + this.name + " : " + smi.error);
+    }
     if(!Array.isArray(smi.nvidia_smi_log.gpu)) {
       gpus = [];
       gpus.push(smi.nvidia_smi_log.gpu);
@@ -105,18 +147,24 @@ ServerCard.prototype.refresh = function() {
     var str = "";
     for(var i in gpus) {
       var gpu = gpus[i];
-      console.log(gpu);
       var gpu_no = gpu.minor_number;
       var name = gpu.product_name;
       var gpu_util = gpu.utilization.gpu_util;
       var mem_util = gpu.utilization.memory_util;
       var used_mem = gpu.fb_memory_usage.used;
       var total_mem = gpu.fb_memory_usage.total;
+      var temp = gpu.temperature.gpu_temp;
+      var temp_slow = gpu.temperature.gpu_temp_slow_threshold;
+      var temp_max = gpu.temperature.gpu_temp_max_threshold;
+      var temp_num = parseInt(temp)
       
       if(str.length != 0) {
         str = str + "<br />";
       }
       str = str + "<b>GPU " + gpu_no + " (" + name + ")" + "</b>";
+      str = str + "<br />&nbsp;&nbsp;&nbsp; <font color='" + getTempColor(temp_num) + "'>GPU Temp: " + temp;
+      str = str + "</font>"
+      str = str + " (Slow: " + temp_slow + " / Max: " + temp_max + ")";
       str = str + "<br />&nbsp;&nbsp;&nbsp; GPU Util: " + gpu_util + ", Mem Util: " + mem_util;
       str = str + "<br />&nbsp;&nbsp;&nbsp; Memory: " + used_mem + "/" + total_mem;
 
@@ -130,24 +178,22 @@ ServerCard.prototype.refresh = function() {
           processes = gpu.processes.process_info;
         }
 
-        str = str + "<font color='red'><b>";
         for(var j in processes) {
           var procinfo = processes[j];
-          if(j != 0) {
-            str = str + ", ";
-          }
           var username = (procinfo.username === undefined) ? "Unknown" : procinfo.username;
           var pname = procinfo.process_name;
+          if(isBlacklisted(pname)) continue;
           var pid = procinfo.pid;
           var used_memory = procinfo.used_memory;
           str = str + "<br />&nbsp;&nbsp;&nbsp; ";
+	  if(pname.indexOf('xorg') < 0 && pname.indexOf('Xorg') < 0 && pname.indexOf('gnome') < 0) {
+	    str = str + "<font color='red'><b>";
+	  }
           str = str + username + ": " + pname + "(pid " + pid + ", " + used_memory +")";
+	  if(pname.indexOf('xorg') < 0 && pname.indexOf('Xorg') < 0 && pname.indexOf('gnome') < 0) {
+	    str = str + "</b></font>";
+	  }
         }
-        str = str + "</b></font>";
-      } else {
-        str = str + "<font color='green'><b>";
-        str = str + "<br />&nbsp;&nbsp;&nbsp; No Running Processes";
-        str = str + "</b></font>";
       }
     }
     $('#' + this.contentsId).html(str);

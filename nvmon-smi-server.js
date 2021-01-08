@@ -4,7 +4,9 @@ const smi = require('node-nvidia-smi');
 const http = require('http');
 const child_process = require('child_process');
 var hostname = undefined;
-const port = 3100; /* nvmon-smi-server port */
+const config = require('./nvmon-config.js');
+console.log(JSON.stringify(config));
+const port = config.port; /* nvmon-smi-server port */
 
 // Get My IP Address
 {
@@ -17,11 +19,14 @@ const port = 3100; /* nvmon-smi-server port */
         return;
       }
 
+      const ifnameRE = new RegExp(config.ifnameFilter);
+      const ipRE = new RegExp(config.ipFilter);
+      var ip = iface.address;
+      console.log("interface : " + ifname + " / " + ip);
       if(os.type().startsWith("Windows") ||
-          ifname.startsWith("enp") ||
-          ifname.startsWith("eth") ||
-          ifname.startsWith("wlan")) {
-        hostname = iface.address;
+	  ifnameRE.exec(ifname) !== null &&
+	  ipRE.exec(ip) !== null) {
+        hostname = ip;
       }
     });
   });
@@ -99,13 +104,19 @@ const server = http.createServer((req, res) => {
 
   var smiCallback = (err, data) => {
     if(err) {
-      console.warn(err);
-      process.exit(1);
+	    var ret = {error: err};
+	    res.end(JSON.stringify(ret));
+    } else {
+	    data = add_username(data);
+	    res.end(JSON.stringify(data, null, ' '));
     }
-    data = add_username(data);
-    res.end(JSON.stringify(data, null, ' '));
   }
-  smi(smiCallback);
+  try {
+	  smi(smiCallback);
+  } catch (e) {
+	  var ret = {error: e};
+	  res.end(JSON.stringify(ret));
+  }
 });
 
 // Start Server
