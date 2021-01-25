@@ -1,5 +1,0 @@
-var NvmonConfig = {
-  serverList: [
-    { name: "server1", ip: "192.168.0.2" }
-  ]
-};
