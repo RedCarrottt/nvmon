@@ -7,7 +7,7 @@
     "connect": "^3.6.6",
     "cors": "^2.8.4",
     "node-nvidia-smi": "^1.0.0",
-    "serve-static": "^1.13.2"
+    "serve-static": "^1.16.2"
   },
   "devDependencies": {},
   "scripts": {
